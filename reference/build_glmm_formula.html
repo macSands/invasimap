@@ -44,7 +44,7 @@ standard formula suitable for glmmTMB, lme4, etc."><meta property="og:image" con
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.png" class="logo" alt=""><h1>Build a trait-environment GLMM formula safely and flexibly</h1>
-      <small class="dont-index">Source: <a href="https://github.com/macSands/invasimap/blob/master/R/build_glmm_formula.R" class="external-link"><code>R/build_glmm_formula.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/macSands/invasimap/blob/main/R/build_glmm_formula.R" class="external-link"><code>R/build_glmm_formula.R</code></a></small>
       <div class="d-none name"><code>build_glmm_formula.Rd</code></div>
     </div>
 
@@ -186,7 +186,7 @@ Supplied verbatim (e.g., random intercepts/slopes). For example,
 <span class="r-out co"><span class="r-pr">#&gt;</span> count ~ trait_cont1 + trait_cont2 + trait_cat + env1 + env2 + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     (trait_cont1 + trait_cont2 + trait_cat):(env1 + env2) + (1 | </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     species) + (1 | site_id)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x563c7bec6e88&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e368337060&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example fit (uncomment if glmmTMB is available)</span></span></span>
 <span class="r-in"><span><span class="co"># mod = glmmTMB::glmmTMB(fml, data = longDF, family = glmmTMB::tweedie(link = "log"))</span></span></span>
@@ -202,7 +202,7 @@ Supplied verbatim (e.g., random intercepts/slopes). For example,
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fml2</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> count ~ trait_cont1 + trait_cont2 + trait_cat + env1 + env2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x563c7bfc2728&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e368436610&gt;</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

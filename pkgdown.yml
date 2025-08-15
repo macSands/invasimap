@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   getting-started: getting-started.html
-last_built: 2025-08-15T10:48Z
+last_built: 2025-08-15T11:37Z
 urls:
   reference: https://macsands.github.io/invasimap/reference
   article: https://macsands.github.io/invasimap/articles
