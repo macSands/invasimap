@@ -1,0 +1,16 @@
+.Rproj.user
+.Rhistory
+.Rapp.history
+.RData
+.Ruserdata
+.DS_Store
+.env
+.Renviron
+.httr-oauth
+inst/doc
+
+# Mac OS
+.DS_Store
+
+# Mac OS
+.DS_Store

@@ -1,0 +1,500 @@
+---
+title: "B-Cubed R Package Bootstrap & Compliance Checklist"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    df_print: paged
+params:
+  org: "macSands"                  # GitHub organization
+  repo_name: "invasimap"           # repo / package name
+  package_name: "invasimap"        # R package name
+  title: "Quantifying Invasion Fitness — a trait-based, site-specific workflow"
+  description: "A novel framework to visualise trait dispersion and assess invasiveness and invasibility"
+  maintainer_given: "Sandra"
+  maintainer_family: "MacFadyen"
+  maintainer_email: "macfadyen@sun.ac.za"
+  maintainer_orcid: "0000-0002-5316-440X"
+  copyright_holder: "Stellenbosch University"
+  bug_repo: "https://github.com/macSands/invasimap/issues"
+  url: "https://github.com/macSands/invasimap"
+  coc_email: "sandra@biogis.co.za"
+  license: "MIT"
+  use_github: true
+  init_pkgdown: true
+  init_tests: true
+  init_ci: true
+  add_linters: true
+  add_coverage: true
+  add_issue_templates: true
+  add_contributing: true
+  add_codeowners: false
+  r_version_min: "4.1.0"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", message = TRUE, warning = TRUE, eval = FALSE)
+```
+
+
+Here’s a reliable workflow.
+
+## Phase A — before the package exists
+
+1. **Open the Rmd** anywhere convenient (e.g., a “dev” folder), edit the YAML `params:`.
+2. In the `setup` chunk leave `eval = FALSE` (so nothing runs automatically when knitting).
+3. Run chunk **“install-core”** (installs helper tooling).
+4. Run chunk **“create-pkg”**.
+
+   * RStudio will prompt to open the new project (e.g., `invasimap/`). Accept.
+
+## Phase B — inside the new package project
+
+Copy the Rmd into the package (e.g., at root or `inst/dev/`), then continue:
+
+5. Run **“hygiene”** (LICENSE, README, .gitignore, Rproj).
+6. Run **“description”** (fills `DESCRIPTION`, enforces Imports/Suggests).
+7. Run **“community”** (CODE\_OF\_CONDUCT, CONTRIBUTING, issue templates, etc.).
+8. Run **“tests-ci”** (testthat, CI workflows, pkgdown scaffolding).
+9. Run **“linters-and-doctor”** (writes `.lintr`, `tools/bcubed_doctor.R`, CI for doctor).
+10. Run **“citation”** (creates `inst/CITATION` and `CITATION.cff`).
+11. Run **“vignette-news”** (adds a starter vignette and `NEWS.md`).
+12. Run **“readme-template”** (adds install/example sections to `README.Rmd`).
+13. (Optional now or later) Run **“build-site”** (pkgdown).
+14. (Optional) Run **“deps”** (adds recommended deps like `sf`/`terra`).
+15. Run **“link-remote”** to initialize git; then **manually**:
+
+    * Create a **public** repo under your org on GitHub; set MIT license and R `.gitignore`.
+    * Add topics; disable Wikis/Projects; protect `main`.
+    * Set the remote and push:
+
+```{r}
+usethis::use_git()
+gert::git_remote_add("origin", sprintf("https://github.com/%s/%s.git", params$org, params$repo_name))
+gert::git_push(set_upstream = TRUE)
+```
+16. Run **“checks”** (style, lint, document, tests, full check, codemeta).
+
+### Running chunks: practical tips
+
+* In RStudio, click the **green triangle** per chunk. For a given chunk you want to execute, set `eval = TRUE` just for that chunk if you prefer knitting; otherwise, running interactively is fine.
+* Most `usethis` steps are **idempotent**—safe to re-run if something fails.
+* Keep the **YAML `params:`** as the single source of truth; inside chunks refer to `params$…` (or your short aliases if you defined them).
+
+### What *not* to do
+
+* Don’t try to **knit the whole document end-to-end** with all chunks `eval=TRUE`: the project switch at `create_package()` interrupts knitting.
+* Don’t duplicate parameter values in an `{r params}` chunk; if you keep an alias chunk, assign from `params$…` and set `include=FALSE`.
+
+### Daily driver commands
+
+* Re-run the repository gate anytime:
+
+```{r}
+source("tools/bcubed_doctor.R", echo = TRUE)
+```
+
+* Build docs and site:
+
+```{r}
+devtools::document()
+pkgdown::build_site()
+```
+* Tests and coverage:
+
+```{r}
+devtools::test()
+covr::report()   # aim ≥75%
+```
+
+That’s it. Proceed top-to-bottom once, then use the doctor script + CI to keep things compliant going forward.
+
+
+```{r params}
+org              = params$org
+repo_name        = params$repo_name
+package_name     = params$package_name
+pkg_title        = params$pkg_title
+pkg_description  = params$pkg_description
+maintainer_given = params$maintainer_given
+maintainer_family= params$maintainer_family
+maintainer_email = params$maintainer_email
+maintainer_orcid = params$maintainer_orcid
+copyright_holder = params$copyright_holder
+bug_repo         = params$bug_repo
+url              = params$url
+coc_email        = params$coc_email
+license          = params$license
+use_github       = params$use_github
+init_pkgdown     = params$init_pkgdown
+init_tests       = params$init_tests
+init_ci          = params$init_ci
+add_linters      = params$add_linters
+add_coverage     = params$add_coverage
+add_issue_templates = params$add_issue_templates
+add_contributing = params$add_contributing
+add_codeowners   = params$add_codeowners
+r_version_min    = params$r_version_min
+```
+
+
+# 1. Pre-requisites (once per machine)
+
+```{r install-core}
+install.packages(setdiff(
+  c("usethis","devtools","desc","pkgdown","rcmdcheck","testthat","covr",
+    "lintr","styler","goodpractice","codemetar","cffr","withr"),
+  rownames(installed.packages())
+))
+```
+
+# 2. Create the package skeleton (local)
+
+> If you already have a package, skip to **Section 3**.
+
+```{r create-pkg}
+# # Creates a new package directory in the current working directory
+# # usethis::create_package(params$package_name, fields = list(
+# #   Title = params$title,
+# #   Description = params$description
+# # ))
+# 
+# usethis::create_package(package_name, fields = list(
+#   Title = pkg_title,
+#   Description = pkg_description
+# ))
+```
+
+Open the new project (RStudio prompts). Then continue below **inside that project**.
+
+# 3. Initialize repo hygiene (LICENSE, README, .gitignore, Rproj)
+
+```{r hygiene}
+usethis::use_tidy_description()
+usethis::use_mit_license(copyright_holder = params$copyright_holder)
+usethis::use_readme_rmd()
+# Create/append common ignores (idempotent)
+usethis::use_git_ignore(c(
+  ".Rhistory", ".Rapp.history",
+  ".RData", ".Ruserdata",
+  ".Rproj.user",
+  ".DS_Store",
+  ".env", ".Renviron",
+  ".httr-oauth",
+  "inst/doc"           # built vignettes
+))
+# ensure macOS cruft ignored
+cat("\n# Mac OS\n.DS_Store\n", file = ".gitignore", append = TRUE)
+# ensure RStudio project is present
+usethis::use_rstudio()
+```
+
+# 4. DESCRIPTION = Authors\@R, URLs, Imports policy
+
+```{r description}
+d = desc::desc(file = "DESCRIPTION")
+
+# sanity checks to guarantee scalars
+stopifnot(is.character(params$title), length(params$title) == 1L)
+stopifnot(is.character(params$description), length(params$description) == 1L)
+
+d$set("Package", params$package_name)
+d$set("Title", params$title)
+d$set("Description", params$description)
+d$set("License", paste(params$license, "+ file LICENSE"))
+d$set_dep("R", type = "Depends", version = paste0(">=", params$r_version_min))
+d$set("URL", params$url)
+d$set("BugReports", params$bug_repo)
+d$del("Depends")  # enforce Imports/Suggests only (B-Cubed rule)
+
+authors = c(
+  utils::person(
+    given   = params$maintainer_given,
+    family  = params$maintainer_family,
+    email   = params$maintainer_email,
+    role    = c("aut","cre"),
+    comment = c(ORCID = sub("^https?://orcid.org/", "", params$maintainer_orcid)) # id only is fine
+  ),
+  utils::person(
+    given   = params$copyright_holder,  # institution as copyright holder
+    role    = "cph"
+  )
+)
+
+# Compliant, multi-sentence Description (UK spelling kept)
+desc_text = paste(
+  "Provides a trait-based, site-specific workflow to quantify invasion fitness by combining",
+  "predicted abundances, trait-based competition, and environmental matching.",
+  "Includes tools to simulate invaders, compute interaction kernels, assemble impact tensors,",
+  "and visualise trait dispersion."
+)
+d$set("Description", desc_text)
+
+d$write(file = "DESCRIPTION")
+usethis::use_roxygen_md()
+```
+
+# 5. Core governance & community files
+
+```{r community}
+# Code of Conduct (Contributor Covenant) — update contact email
+usethis::use_tidy_coc()
+
+# fix default email
+x = readLines("CODE_OF_CONDUCT.md"); x = sub("codeofconduct@posit.co", params$coc_email, x, fixed = TRUE)
+dir.create(".github", showWarnings = FALSE)
+writeLines(x, ".github/CODE_OF_CONDUCT.md"); unlink("CODE_OF_CONDUCT.md")
+if (params$add_contributing) usethis::use_tidy_contributing()
+if (params$add_issue_templates) usethis::use_tidy_issue_template()
+if (params$add_codeowners) {
+  dir.create(".github", showWarnings = FALSE)
+  writeLines("# CODEOWNERS\n# @org/team or @user handles\n* @your-handle", ".github/CODEOWNERS")
+}
+```
+
+# 6. Testing, coverage, CI, pkgdown
+
+```{r tests-ci}
+if (params$init_tests) {
+  usethis::use_testthat(3)
+  usethis::use_test("package-sanity")
+}
+if (params$add_coverage) usethis::use_github_action("test-coverage", quiet = TRUE)
+if (params$init_ci)      usethis::use_github_action("check-standard", quiet = TRUE, badge = TRUE)
+if (params$init_pkgdown) {
+  usethis::use_pkgdown()
+  # Optional = GitHub Pages deploy
+  usethis::use_pkgdown_github_pages()
+}
+```
+
+# 7. Linting, styling, “B-Cubed Doctor” script
+
+Creates:
+
+* `.lintr` with rules enforcing snake\_case, no `<=`, no `cat()`/`print()` in package code.
+* `tools/bcubed_doctor.R` to run style/lint, regenerate docs, and run checks.
+* Optional GitHub Action to run the doctor on PRs.
+
+```{r linters-and-doctor}
+if (params$add_linters) {
+  writeLines('linters = linters_with_defaults(
+  line_length_linter(120),
+  object_name_linter(styles = "snake_case"),
+  assignment_linter(),
+  undesirable_function_linter = undesirable_function_linter(c(
+    "<=" = "super-assignment risks global side-effects",
+    "assign" = "may alter parent env",
+    "setwd" = "side effect; avoid in packages",
+    "rm" = "don’t modify user workspace",
+    "cat" = "prefer message()/warning()/stop()",
+    "print" = "avoid in packages; return values instead"
+  ))
+)', ".lintr")
+}
+dir.create("tools", showWarnings = FALSE)
+writeLines(
+'quiet = function(expr) try(suppressPackageStartupMessages(suppressWarnings(expr)), silent = TRUE)
+pkgs = c("lintr","styler","desc","rcmdcheck","devtools")
+invisible(lapply(pkgs, function(p) if (!requireNamespace(p, quietly=TRUE)) install.packages(p)))
+
+usethis::use_tidy_description()
+styler::style_pkg()
+
+linters = lintr::linters_with_defaults(
+  line_length_linter(120),
+  object_name_linter(styles = "snake_case"),
+  assignment_linter(),
+  undesirable_function_linter = lintr::undesirable_function_linter(c(
+    "<="="super-assignment", "assign"="global env", "setwd"="side effect",
+    "rm"="workspace change", "cat"="use message()", "print"="avoid in packages"))
+)
+print(lintr::lint_dir("R", linters = linters))
+
+devtools::document()
+rcmdcheck::rcmdcheck(args = c("--no-manual"), error_on = "warning")',
+"tools/bcubed_doctor.R")
+# Optional action to run doctor in CI
+dir.create(".github/workflows", recursive = TRUE, showWarnings = FALSE)
+writeLines(
+'name = bcubed-doctor
+on = [pull_request, push]
+jobs:
+  doctor:
+    runs-on = ubuntu-latest
+    steps:
+      - uses = actions/checkout@v4
+      - uses = r-lib/actions/setup-r@v2
+      - uses = r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages = any::devtools, any::rcmdcheck, any::lintr, any::styler
+      - name = Run doctor
+        run = Rscript tools/bcubed_doctor.R',
+".github/workflows/bcubed-doctor.yml")
+```
+
+# 8. CITATION files (CITATION.cff + R’s CITATION)
+
+```{r citation}
+usethis::use_citation()    # creates inst/CITATION for R packages
+# Create CITATION.cff for the repo
+if (!requireNamespace("cffr", quietly = TRUE)) install.packages("cffr")
+cffr::cff_write(keys = list(
+  contact = list(email = params$maintainer_email),
+  authors = list(list(givenNames = params$maintainer_given,
+                      familyNames = params$maintainer_family,
+                      orcid = paste0("https://orcid.org/", params$maintainer_orcid))))
+)
+```
+
+# 9. Vignettes & NEWS (recommended)
+
+```{r vignette-news}
+usethis::use_vignette("getting-started")
+usethis::use_news_md()
+```
+
+# 10. Minimal README scaffolding (meets B-Cubed README rules)
+
+The chunk below **appends** a template to `README.Rmd` if not already present.
+
+````{r readme-template}
+app = '
+## Installation
+
+```r
+# From GitHub
+# install.packages("pak")
+pak::pak("{org}/{repo}")
+````
+
+## Example
+
+```r
+library({pkg})
+# add a minimal example once functions exist
+```
+
+## Status
+
+[![R-CMD-check](https://github.com/{org}/{repo}/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/{org}/{repo}/actions/workflows/check-standard.yaml)
+'. |>
+gsub("\\{org\\}", params\$org, x = \_) |>
+gsub("\\{repo\\}", params\$repo\_name, x = \_) |>
+gsub("\\{pkg\\}",  params\$package\_name, x = \_)
+if (!grepl("## Installation", readLines("README.Rmd"))) cat(app, file = "README.Rmd", append = TRUE)
+
+````
+
+# 11. pkgdown site (optional but required by B-Cubed for packages)
+
+```{r build-site}
+if (params$init_pkgdown) {
+  pkgdown::build_site()
+}
+```
+
+# 12. Optional = add recommended dependencies (sf/terra instead of sp/rgdal/rgeos/maptools/raster)
+
+```{r deps}
+# Examples = add as Imports or Suggests explicitly (B-Cubed = no Depends)
+# usethis::use_package("sf", type = "Imports")
+# usethis::use_package("terra", type = "Imports")
+```
+
+# 13. Local Git & GitHub setup
+
+> **Manual steps required (per B-Cubed GitHub rules):**
+>
+> 1. Create a **public** repository under the **`r params$org`** organization with **MIT** license and **.gitignore (R)**.
+> 2. Set **Topics** (e.g., `r`, `rstats`, `r-package`, domain tags).
+> 3. Disable **Wikis** and **Projects** in Settings → Features.
+> 4. Protect `main` = Settings → Branches → Add rule → pattern `main`, require PR + approvals.
+> 5. Invite collaborators via organization teams.
+
+You can connect your local package to the GitHub repo like:
+
+```{r link-remote}
+usethis::use_git()
+# Set remote to the org repo you created; replace with your repo URL
+# usethis::use_github(protocol = "https", organisation = params$org, private = FALSE)  # creates repo if you have org rights
+# Or manually:
+# gert::git_remote_add("origin", sprintf("https://github.com/%s/%s.git", params$org, params$repo_name))
+# gert::git_push(set_upstream = TRUE)
+```
+
+# 14. Compliance checklist (run before every release)
+
+```{r checks}
+# Style & lint
+styler::style_pkg()
+lintr::lint_package()
+
+# Rebuild docs/NAMESPACE
+devtools::document()
+
+# Unit tests and coverage
+devtools::test()
+if (params$add_coverage) covr::report()  # HTML coverage report
+
+# Full check (must pass with no ERRORs; aim for no WARNINGS/NOTES)
+rcmdcheck::rcmdcheck(args = c("--as-cran"))
+
+# Codemeta (B-Cubed requires codemeta.json)
+codemetar::write_codemeta()
+```
+
+# 15. Versioning & Releases
+
+* Use **semantic versioning** in `DESCRIPTION` (`Version:`).
+* Tag **major/minor** versions with GitHub **Releases**; from **1.0.0**, deposit to **Zenodo** (link Zenodo → GitHub once).
+* Maintain `NEWS.md` changelog.
+
+---
+
+## Appendix A — Function authoring rules (quick template)
+
+For each **exported** function (`R/<name>.R`):
+
+```r
+#' <Concise verb phrase title>
+#'
+#' @description One–two sentences on purpose and context.
+#' @param x <type> What it is.
+#' @param ... <optional> More controls.
+#' @return <class/structure> Describe shape (cols, dims).
+#' @examples
+#' # minimal, runnable example
+#' # res = function_name(x = ...)
+#' @export
+function_name = function(x, required_arg, optional_arg = NULL, seed = NULL) {
+  # no global side-effects; use message()/warning()/stop() instead of print()/cat()
+}
+```
+
+**Rules enforced here:**
+
+* snake\_case; verb in name; required args before optionals; outputs depend only on inputs; one function per file (helpers in `R/utils.R`).
+
+---
+
+## Appendix B — README.md minimal sections (B-Cubed)
+
+Your `README.md` **must** have:
+
+* `# Title` (H1),
+* brief introduction,
+* installation,
+* minimal example,
+* (optional) badges (status/lifecycle/coverage).
+
+This Rmd has already scaffolded `README.Rmd` accordingly; edit it as you add functionality.
+
+```
+
+**Usage notes**
+- Chunks are set `eval=FALSE` so you can run them stepwise. Turn `eval=TRUE` selectively when you’re ready.
+- Where GitHub org permissions are needed (creating repos, enabling Pages), follow the inline manual steps.
+- The `tools/bcubed_doctor.R` script plus linters/styler give you a one-command gate to keep the repo compliant.
+```
