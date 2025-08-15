@@ -7,7 +7,6 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/macSands/invasimap/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/macSands/invasimap/actions/workflows/R-CMD-check.yaml)
-[![check-standard](https://github.com/macSands/invasimap/actions/workflows/check-standard.yaml/badge.svg)](https://github.com/macSands/invasimap/actions/workflows/check-standard.yaml)
 [![test-coverage](https://github.com/macSands/invasimap/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/macSands/invasimap/actions/workflows/test-coverage.yaml)
 [![codecov](https://codecov.io/gh/macSands/invasimap/graph/badge.svg)](https://app.codecov.io/gh/macSands/invasimap)
 [![lifecycle](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
