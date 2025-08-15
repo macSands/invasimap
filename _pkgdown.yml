@@ -1,0 +1,67 @@
+template:
+  bootstrap: 5
+  bslib:
+    bootswatch: flatly
+    bslib: ~
+    bg: '#ffffff'
+    fg: '#2f2f2f'
+    heading_font:
+      google: PT Sans
+    primary: '#005856'
+url: https://macsands.github.io/invasimap/
+home:
+  title: invasimap
+  description: A Novel Framework to visualise trait dispersion and assess species
+    invasiveness or site invasibility
+  links:
+  - text: Browse source code
+    href: https://github.com/macSands/invasimap
+  - text: Report a bug
+    href: https://github.com/macSands/invasimap/issues
+navbar:
+  structure:
+    left:
+    - reference
+    - articles
+    - news
+    right:
+    - search
+    - github
+  components:
+    github:
+      icon: fab fa-github
+      aria-label: GitHub repository
+      href: https://github.com/macSands/invasimap
+reference:
+- title: Overview of invasimap functions
+  desc: |
+    Quantifies and visualises invasion fitness from occurrence and trait data.
+    Computes trait centrality, maps trait dispersion, and estimates interaction strength.
+    Assesses site-level invasibility and community openness to new invasions.
+    Produces interaction matrices and trait-specific invasion risk indicators.
+    Aligns with Hui et al. (2023): integrates traits, propagule pressure, and environment.
+- title: Core Functions
+  contents:
+  - get_trait_data
+  - compute_trait_similarity
+  - compute_trait_dispersion
+  - compute_trait_space
+  - build_glmm_formula
+  - simulate_invaders
+  - predict_invader_response
+  - compute_interaction_strength
+  - compute_competition_kernel
+  - compute_environment_kernel
+  - assemble_matrices
+  - compute_invasion_fitness
+articles:
+- title: All tutorials
+  navbar: Articles
+  contents: getting-started
+footer:
+  structure:
+    left: developed_by
+    right:
+    - pkgdown
+    - source
+

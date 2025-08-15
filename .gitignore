@@ -7,10 +7,11 @@
 .env
 .Renviron
 .httr-oauth
-inst/doc
-
+_bcube_package_doctor.R
+# Ignore all climate assets
+inst/extdata/climate/**
 # Mac OS
 .DS_Store
-
 # Mac OS
 .DS_Store
+docs

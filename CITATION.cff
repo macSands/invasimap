@@ -1,0 +1,38 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+
+cff-version: 1.2.0
+message: 'To cite package "invasimap" in publications use:'
+type: software
+license: MIT
+title: 'invasimap: A Novel Framework to visualise trait dispersion and assess species invasiveness or site invasibility'
+version: 0.1
+abstract: Provides a trait-based, site-specific workflow to quantify invasion fitness
+  by combining predicted abundances, trait-based competition, and environmental filtering.
+  Includes tools to simulate invaders, compute interaction kernels, assemble impact
+  tensors, and visualise trait dispersion.
+authors:
+- givenNames: Sandra
+  familyNames: MacFadyen
+  orcid: https://orcid.org/0000-0002-5316-440X
+repository-code: https://github.com/macSands/invasimap
+url: https://macsands.github.io/invasimap/
+contact:
+  email: macfadyen@sun.ac.za
+references:
+- type: software
+  title: testthat
+  abstract: 'testthat: Unit Testing for R'
+  notes: Suggests
+  url: https://testthat.r-lib.org
+  repository: https://CRAN.R-project.org/package=testthat
+  authors:
+  - family-names: Wickham
+    given-names: Hadley
+    email: hadley@posit.co
+  year: '2025'
+  doi: 10.32614/CRAN.package.testthat
+  version: '>= 3.0.0'
+

@@ -1,0 +1,18 @@
+linters: lintr::linters_with_defaults(
+ line_length_linter = lintr::line_length_linter(120),
+ object_name_linter = lintr::object_name_linter(styles = "snake_case"),
+ assignment_linter  = lintr::assignment_linter(),
+ absolute_path_linter = lintr::absolute_path_linter(),
+ namespace_linter   = lintr::namespace_linter(),
+ undesirable_function_linter = lintr::undesirable_function_linter(c(
+  "<<-"="super-assignment risks global side-effects",
+  "assign"="may alter parent env; avoid or pass env explicitly",
+  "setwd"="side effect; avoid in packages",
+  "rm"="do not modify user workspace",
+  "cat"="prefer message()/warning()/stop()",
+  "print"="avoid in packages; return values instead"
+ ))
+ )
+exclusions: list(
+ "docs", "pkgdown", "inst/doc", "data-raw"
+ )

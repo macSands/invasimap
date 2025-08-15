@@ -1,0 +1,24 @@
+citHeader("To cite invasimapr in publications, please use:")
+
+pkg  <- if (exists("meta") && !is.null(meta$Package)) meta$Package else "invasimapr"
+ver  <- if (exists("meta") && !is.null(meta$Version)) meta$Version else "0.0.9"
+tit  <- if (exists("meta") && !is.null(meta$Title) && nzchar(meta$Title)) meta$Title else
+  paste0(pkg, ": Trait-based, site-specific invasion fitness workflow")
+yr   <- if (exists("meta") && !is.null(meta$Date)) substr(meta$Date, 1, 4) else format(Sys.Date(), "%Y")
+
+bibentry(
+  bibtype = "Manual",
+  title   = tit,
+  author  = c(
+    person("Sandra", "MacFadyen", email = "macfadyen@sun.ac.za", role = c("aut","cre"),
+           comment = c(ORCID = "0000-0002-5316-440X"))
+  ),
+  organization = "Stellenbosch University",
+  year    = yr,
+  note    = sprintf("R package version %s", ver),
+  url     = "https://github.com/macSands/invasimap",
+  textVersion = paste0(
+    "MacFadyen, S. (", yr, "). ", tit, 
+    ". R package version ", ver, ". URL: https://github.com/macSands/invasimap."
+  )
+)
