@@ -1,0 +1,13 @@
+/* Global text rhythm */
+p { line-height: 1.75; margin-bottom: 0.9rem; }
+li { margin-bottom: 0.4rem; }
+
+/* Math blocks: a bit more air */
+.math.display { margin: 1rem 0 1.25rem; }
+
+/* Headings spacing */
+h2 { margin-top: 2rem; padding-top: .25rem; }
+h3 { margin-top: 1.25rem; }
+
+/* Code spans look a touch softer */
+code { padding: .1rem .2rem; border-radius: .25rem; }
